@@ -1,27 +1,59 @@
 
 const express = require("express");
 const path = require("path");
-const pool = require("./db");
+require("dotenv").config({
+    path: path.join(__dirname, "Enquiry", ".env")
+});
+
+const pool = require("./Enquiry/db");
+const quotationPool = require("./Quotation/db");
+const invoicePool = require("./invoice/db");
 
 const app = express();
 const PORT = 3000;
 
-// Middleware to receive JSON data
+// Middleware
 app.use(express.json());
 
-// Serve frontend files from Public folder
-app.use(express.static(path.join(__dirname, "Public")));
+// Main Dashboard
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// Enquiry frontend
+app.use(
+    "/Enquiry",
+    express.static(path.join(__dirname, "Enquiry", "Public"))
+);
+
+// Quotation frontend
+app.use(
+    "/Quotation",
+    express.static(path.join(__dirname, "Quotation", "public"))
+);
+
+// Invoice frontend
+app.use(
+    "/invoice",
+    express.static(path.join(__dirname, "invoice", "public"))
+);
+
+// Invoice and Order pages in the main folder
+app.get("/invoice.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "invoice.html"));
+});
+
+app.get("/orderr.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "orderr.html"));
+});
 
 // Test backend
 app.get("/test", (req, res) => {
-    res.send("Enquiry Backend is Working!");
+    res.send("CRM Backend is Working!");
 });
 
-// Save enquiry into PostgreSQL
+// CREATE ENQUIRY
 app.post("/enquiry", async (req, res) => {
-    console.log("Enquiry API called!");
-    console.log("Received data:", req.body);
-
     try {
         const {
             ENQUIRY_NO,
@@ -32,7 +64,6 @@ app.post("/enquiry", async (req, res) => {
             ENQUIRY_CATEGORY
         } = req.body;
 
-        // Check required fields
         if (
             !ENQUIRY_NO ||
             !ENQUIRY_DATE ||
@@ -46,15 +77,10 @@ app.post("/enquiry", async (req, res) => {
             });
         }
 
-        // SQL query
         const query = `
             INSERT INTO enquiry (
-                enquiry_no,
-                enquiry_date,
-                company_name,
-                mobile_no,
-                leadsource,
-                enquiry_category
+                enquiry_no, enquiry_date, company_name,
+                mobile_no, leadsource, enquiry_category
             )
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *;
@@ -77,8 +103,8 @@ app.post("/enquiry", async (req, res) => {
         });
 
     } catch (error) {
+        console.error("DATABASE ERROR:", error);
 
-       console.error("DATABASE ERROR:", error);
         res.status(error.code === "23505" ? 409 : 500).json({
             message: error.code === "23505"
                 ? "Enquiry number already exists"
@@ -87,36 +113,26 @@ app.post("/enquiry", async (req, res) => {
     }
 });
 
-
-// Get all enquiries from PostgreSQL
+// READ ALL ENQUIRIES
 app.get("/enquiries", async (req, res) => {
-
     try {
-
         const result = await pool.query(
             "SELECT * FROM enquiry ORDER BY enquiry_date DESC"
         );
 
-        res.status(200).json(result.rows);
+        res.json(result.rows);
 
     } catch (error) {
-
         console.error("FETCH ERROR:", error);
-
         res.status(500).json({
             message: "Unable to retrieve enquiries"
         });
-
     }
-
 });
 
-
- // Get one enquiry using enquiry number
+// READ ONE ENQUIRY
 app.get("/enquiry/:enquiry_no", async (req, res) => {
-
     try {
-
         const { enquiry_no } = req.params;
 
         const result = await pool.query(
@@ -130,25 +146,19 @@ app.get("/enquiry/:enquiry_no", async (req, res) => {
             });
         }
 
-        res.status(200).json(result.rows[0]);
+        res.json(result.rows[0]);
 
     } catch (error) {
-
         console.error("FETCH ERROR:", error);
-
         res.status(500).json({
             message: "Unable to retrieve enquiry"
         });
-
     }
-
 });
 
- 
+// UPDATE ENQUIRY
 app.put("/enquiry/:enquiry_no", async (req, res) => {
-
     try {
-
         const { enquiry_no } = req.params;
 
         const {
@@ -173,8 +183,7 @@ app.put("/enquiry/:enquiry_no", async (req, res) => {
 
         const query = `
             UPDATE enquiry
-            SET
-                enquiry_date = $1,
+            SET enquiry_date = $1,
                 company_name = $2,
                 mobile_no = $3,
                 leadsource = $4,
@@ -206,30 +215,22 @@ app.put("/enquiry/:enquiry_no", async (req, res) => {
         });
 
     } catch (error) {
-
         console.error("UPDATE ERROR:", error);
-
         res.status(500).json({
             message: "Unable to update enquiry"
         });
-
     }
-
 });
- 
+
+// DELETE ENQUIRY
 app.delete("/enquiry/:enquiry_no", async (req, res) => {
-
     try {
-
         const { enquiry_no } = req.params;
 
-        const query = `
-            DELETE FROM enquiry
-            WHERE enquiry_no = $1
-            RETURNING *;
-        `;
-
-        const result = await pool.query(query, [enquiry_no]);
+        const result = await pool.query(
+            "DELETE FROM enquiry WHERE enquiry_no = $1 RETURNING *",
+            [enquiry_no]
+        );
 
         if (result.rowCount === 0) {
             return res.status(404).json({
@@ -243,19 +244,400 @@ app.delete("/enquiry/:enquiry_no", async (req, res) => {
         });
 
     } catch (error) {
-
         console.error("DELETE ERROR:", error);
-
         res.status(500).json({
             message: "Unable to delete enquiry"
         });
-
     }
-
 });
 
 
-// Start server
+// GET ALL QUOTATIONS
+app.get("/quotations", async (req, res) => {
+    try {
+        const result = await quotationPool.query(
+            "SELECT * FROM quotation ORDER BY proposal_date DESC"
+        );
+
+        res.status(200).json(result.rows);
+
+    } catch (error) {
+        console.error("QUOTATION FETCH ERROR:", error);
+        res.status(500).json({
+            message: "Unable to retrieve quotations"
+        });
+    }
+});
+
+
+// READ ONE QUOTATION
+app.get("/quotation/:quotation_no", async (req, res) => {
+    try {
+        const { quotation_no } = req.params;
+
+        const result = await quotationPool.query(
+            "SELECT * FROM quotation WHERE quotation_no = $1",
+            [quotation_no]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Quotation not found"
+            });
+        }
+
+        res.json(result.rows[0]);
+
+    } catch (error) {
+        console.error("FETCH ERROR:", error);
+        res.status(500).json({
+            message: "Unable to retrieve quotation"
+        });
+    }
+});
+
+
+// CREATE QUOTATION
+app.post("/quotation", async (req, res) => {
+    try {
+        const {
+            quotation_no,
+            proposal_date,
+            status,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        } = req.body;
+
+        if (
+            !quotation_no ||
+            !proposal_date ||
+            !status ||
+            !customer_name ||
+            !customer_contact ||
+            !customer_mail ||
+            !gstin
+        ) {
+            return res.status(400).json({
+                message: "Please fill all fields"
+            });
+        }
+
+        const query = `
+            INSERT INTO quotation (
+                quotation_no,
+                proposal_date,
+                status,
+                customer_name,
+                customer_contact,
+                customer_mail,
+                gstin
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;
+        `;
+
+        const values = [
+            quotation_no,
+            proposal_date,
+            status,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        ];
+
+        const result = await quotationPool.query(query, values);
+
+        res.status(201).json({
+            message: "Quotation created successfully!",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("QUOTATION DATABASE ERROR:", error);
+
+        res.status(error.code === "23505" ? 409 : 500).json({
+            message: error.code === "23505"
+                ? "Quotation number already exists"
+                : "Unable to create quotation"
+        });
+    }
+});
+
+
+// UPDATE QUOTATION
+app.put("/quotation/:quotation_no", async (req, res) => {
+    try {
+        const { quotation_no } = req.params;
+
+        const {
+            proposal_date,
+            status,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        } = req.body;
+
+        if (
+            !proposal_date ||
+            !status ||
+            !customer_name ||
+            !customer_contact ||
+            !customer_mail ||
+            !gstin
+        ) {
+            return res.status(400).json({
+                message: "Please fill all fields"
+            });
+        }
+
+        const query = `
+            UPDATE quotation
+            SET proposal_date = $1,
+                status = $2,
+                customer_name = $3,
+                customer_contact = $4,
+                customer_mail = $5,
+                gstin = $6
+            WHERE quotation_no = $7
+            RETURNING *;
+        `;
+
+        const values = [
+            proposal_date,
+            status,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin,
+            quotation_no
+        ];
+
+        const result = await quotationPool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Quotation not found"
+            });
+        }
+
+        res.json({
+            message: "Quotation updated successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("UPDATE ERROR:", error);
+        res.status(500).json({
+            message: "Unable to update quotation"
+        });
+    }
+});
+
+
+// DELETE QUOTATION
+app.delete("/quotation/:quotation_no", async (req, res) => {
+    try {
+        const { quotation_no } = req.params;
+
+        const result = await quotationPool.query(
+            "DELETE FROM quotation WHERE quotation_no = $1 RETURNING *",
+            [quotation_no]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Quotation not found"
+            });
+        }
+
+        res.json({
+            message: "Quotation deleted successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("DELETE ERROR:", error);
+        res.status(500).json({
+            message: "Unable to delete quotation"
+        });
+    }
+});
+
+
+// CREATE INVOICE
+app.post("/invoice", async (req, res) => {
+    try {
+        const {
+            invoice_no,
+            invoice_date,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        } = req.body;
+
+        const result = await invoicePool.query(
+            `INSERT INTO invoice
+            (invoice_no, invoice_date, customer_name,
+             customer_contact, customer_mail, gstin)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *`,
+            [
+                invoice_no,
+                invoice_date,
+                customer_name,
+                customer_contact,
+                customer_mail,
+                gstin
+            ]
+        );
+
+        res.status(201).json({
+            message: "Invoice created successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("INVOICE ERROR:", error);
+        res.status(error.code === "23505" ? 409 : 500).json({
+            message: error.code === "23505"
+                ? "Invoice number already exists"
+                : "Unable to create invoice"
+        });
+    }
+});
+
+
+// GET ALL INVOICES
+app.get("/invoices", async (req, res) => {
+    try {
+        const result = await invoicePool.query(
+            "SELECT * FROM invoice ORDER BY invoice_date DESC"
+        );
+        res.json(result.rows);
+
+    } catch (error) {
+        console.error("FETCH INVOICE ERROR:", error);
+        res.status(500).json({
+            message: "Unable to fetch invoices"
+        });
+    }
+});
+
+
+// GET ONE INVOICE
+app.get("/invoice/:invoice_no", async (req, res) => {
+    try {
+        const { invoice_no } = req.params;
+
+        const result = await invoicePool.query(
+            "SELECT * FROM invoice WHERE invoice_no = $1",
+            [invoice_no]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Invoice not found"
+            });
+        }
+
+        res.json(result.rows[0]);
+
+    } catch (error) {
+        console.error("FETCH SINGLE INVOICE ERROR:", error);
+        res.status(500).json({
+            message: "Unable to fetch invoice"
+        });
+    }
+});
+
+
+// UPDATE INVOICE
+app.put("/invoice/:invoice_no", async (req, res) => {
+    try {
+        const { invoice_no } = req.params;
+
+        const {
+            invoice_date,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        } = req.body;
+
+        const result = await invoicePool.query(
+            `UPDATE invoice
+            SET invoice_date = $1,
+                customer_name = $2,
+                customer_contact = $3,
+                customer_mail = $4,
+                gstin = $5
+            WHERE invoice_no = $6
+            RETURNING *`,
+            [
+                invoice_date,
+                customer_name,
+                customer_contact,
+                customer_mail,
+                gstin,
+                invoice_no
+            ]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Invoice not found"
+            });
+        }
+
+        res.json({
+            message: "Invoice updated successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("UPDATE INVOICE ERROR:", error);
+        res.status(500).json({
+            message: "Unable to update invoice"
+        });
+    }
+});
+
+
+// DELETE INVOICE
+app.delete("/invoice/:invoice_no", async (req, res) => {
+    try {
+        const { invoice_no } = req.params;
+
+        const result = await invoicePool.query(
+            "DELETE FROM invoice WHERE invoice_no = $1 RETURNING *",
+            [invoice_no]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Invoice not found"
+            });
+        }
+
+        res.json({
+            message: "Invoice deleted successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("DELETE INVOICE ERROR:", error);
+        res.status(500).json({
+            message: "Unable to delete invoice"
+        });
+    }
+});
+
+// Start common server
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`CRM Server running at http://localhost:${PORT}`);
 });
