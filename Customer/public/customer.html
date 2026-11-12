@@ -1,54 +1,94 @@
+
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer</title>
 </head>
+
 <body>
-          <center>
-    <table>
-        <tr>
-            <td>Customer</td>
-        </tr>
-</table>
-<center>
-     <table>
-         <tr>
-            <td>Customer Code :</td>
-            <td><input type="number" placeholder="Enter Your Invoice Number"></td>
-         </tr>
 
-         <tr>
-            <td>Customer Type :</td>
-           <td><input type="text" placeholder="Enter the Customer Type"></td>
-         </tr>
-
-         <tr>
-            <td>Customer Name :</td>
-            <td><input type="text" placeholder="Enter Your Customer Name"></td>
-         </tr>
-
-        <tr>
-            <td>Customer Contact :</td>
-            <td><input type="number" placeholder="Enter Your Mobile Number"></td>
-        </tr>
-        
-          <tr>
-            <td>Customer Mail :</td>
-            <td><input type="email" placeholder="Enter Your Email"></td>
-        </tr>
-
-           <tr>
-            <td>GSTIN :</td>
-            <td><input type="text" placeholder="Enter Your GSTIN"></td>
-        </tr>
-
-    </table>
+    <center>
+        <table>
+            <tr>
+                <td>Customer</td>
+            </tr>
+        </table>
     </center>
- <center>
-        <button>Submit</button>
-        <button>Reset</button>
-    </center>    
-    
+
+    <form id="customerForm">
+
+        <center>
+            <table>
+
+                <tr>
+                    <td>Customer Code :</td>
+                    <td>
+                        <input type="text" id="customerCode"
+                            placeholder="Enter Your Customer Code" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Type :</td>
+                    <td>
+                        <input type="text" id="customerType"
+                            placeholder="Enter the Customer Type" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Name :</td>
+                    <td>
+                        <input type="text" id="customerName"
+                            placeholder="Enter Your Customer Name" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Contact :</td>
+                    <td>
+                        <input type="tel" id="customerContact"
+                            placeholder="Enter Your Mobile Number" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Mail :</td>
+                    <td>
+                        <input type="email" id="customerMail"
+                            placeholder="Enter Your Email">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>GSTIN :</td>
+                    <td>
+                        <input type="text" id="gstin"
+                            placeholder="Enter Your GSTIN">
+                    </td>
+                </tr>
+
+            </table>
+        </center>
+
+        <center>
+            <button type="submit" id="submitBtn">Submit</button>
+            <button type="reset">Reset</button>
+        </center>
+
+    </form>
+
+    <center>
+        <button onclick="window.location.href='/'">
+            Back to Home
+        </button>
+    </center>
+
+    <script src="customer.js"></script>
+
 </body>
+
 </html>

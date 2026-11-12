@@ -8,6 +8,7 @@ require("dotenv").config({
 const pool = require("./Enquiry/db");
 const quotationPool = require("./Quotation/db");
 const invoicePool = require("./invoice/db");
+const customerPool = require("./Customer/db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -608,6 +609,220 @@ app.delete("/invoice/:invoice_no", async (req, res) => {
         });
     }
 });
+
+
+// ================= CUSTOMER MODULE =================
+
+// CREATE CUSTOMER
+app.post("/customer", async (req, res) => {
+    try {
+
+        const {
+            customer_code,
+            customer_type,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        } = req.body;
+
+        if (!customer_code || !customer_type ||
+            !customer_name || !customer_contact) {
+
+            return res.status(400).json({
+                message: "Please fill all required fields"
+            });
+        }
+
+        const query = `
+            INSERT INTO customers (
+                customer_code,
+                customer_type,
+                customer_name,
+                customer_contact,
+                customer_mail,
+                gstin
+            )
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *;
+        `;
+
+        const values = [
+            customer_code,
+            customer_type,
+            customer_name,
+            customer_contact,
+            customer_mail || null,
+            gstin || null
+        ];
+
+        const result = await customerPool.query(query, values);
+
+        res.status(201).json({
+            message: "Customer saved successfully!",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+
+        console.error("CUSTOMER DATABASE ERROR:", error);
+
+        res.status(error.code === "23505" ? 409 : 500).json({
+            message: error.code === "23505"
+                ? "Customer code already exists"
+                : "Unable to save customer"
+        });
+    }
+});
+
+
+// GET ALL CUSTOMERS
+app.get("/customers", async (req, res) => {
+    try {
+
+        const result = await customerPool.query(
+            "SELECT * FROM customers ORDER BY customer_code"
+        );
+
+        res.json(result.rows);
+
+    } catch (error) {
+
+        console.error("CUSTOMER FETCH ERROR:", error);
+
+        res.status(500).json({
+            message: "Unable to retrieve customers"
+        });
+    }
+});
+
+
+// GET ONE CUSTOMER
+app.get("/customer/:customer_code", async (req, res) => {
+    try {
+
+        const { customer_code } = req.params;
+
+        const result = await customerPool.query(
+            "SELECT * FROM customers WHERE customer_code = $1",
+            [customer_code]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Customer not found"
+            });
+        }
+
+        res.json(result.rows[0]);
+
+    } catch (error) {
+
+        console.error("CUSTOMER FETCH ERROR:", error);
+
+        res.status(500).json({
+            message: "Unable to retrieve customer"
+        });
+    }
+});
+
+
+// UPDATE CUSTOMER
+app.put("/customer/:customer_code", async (req, res) => {
+    try {
+
+        const { customer_code } = req.params;
+
+        const {
+            customer_type,
+            customer_name,
+            customer_contact,
+            customer_mail,
+            gstin
+        } = req.body;
+
+        if (!customer_type || !customer_name || !customer_contact) {
+            return res.status(400).json({
+                message: "Please fill all required fields"
+            });
+        }
+
+        const query = `
+            UPDATE customers
+            SET customer_type = $1,
+                customer_name = $2,
+                customer_contact = $3,
+                customer_mail = $4,
+                gstin = $5
+            WHERE customer_code = $6
+            RETURNING *;
+        `;
+
+        const values = [
+            customer_type,
+            customer_name,
+            customer_contact,
+            customer_mail || null,
+            gstin || null,
+            customer_code
+        ];
+
+        const result = await customerPool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Customer not found"
+            });
+        }
+
+        res.json({
+            message: "Customer updated successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+
+        console.error("CUSTOMER UPDATE ERROR:", error);
+
+        res.status(500).json({
+            message: "Unable to update customer"
+        });
+    }
+});
+
+
+// DELETE CUSTOMER
+app.delete("/customer/:customer_code", async (req, res) => {
+    try {
+
+        const { customer_code } = req.params;
+
+        const result = await customerPool.query(
+            "DELETE FROM customers WHERE customer_code = $1 RETURNING *",
+            [customer_code]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Customer not found"
+            });
+        }
+
+        res.json({
+            message: "Customer deleted successfully",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+
+        console.error("CUSTOMER DELETE ERROR:", error);
+
+        res.status(500).json({
+            message: "Unable to delete customer"
+        });
+    }
+});
+
 
 // Start common server
 app.listen(PORT, () => {
