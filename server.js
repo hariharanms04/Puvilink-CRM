@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 require("dotenv").config({
-    path: path.join(__dirname, "Enquiry", ".env")
+    path: path.join(__dirname, ".env")
 });
 
 const pool = require("./Enquiry/db");
