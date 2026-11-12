@@ -10,42 +10,14 @@ const quotationPool = require("./Quotation/db");
 const invoicePool = require("./invoice/db");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
 
-// Main Dashboard
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
+// Serve frontend files locally from the public folder
+app.use(express.static(path.join(__dirname, "public")));
 
-// Enquiry frontend
-app.use(
-    "/Enquiry",
-    express.static(path.join(__dirname, "Enquiry", "Public"))
-);
-
-// Quotation frontend
-app.use(
-    "/Quotation",
-    express.static(path.join(__dirname, "Quotation", "public"))
-);
-
-// Invoice frontend
-app.use(
-    "/invoice",
-    express.static(path.join(__dirname, "invoice", "public"))
-);
-
-// Invoice and Order pages in the main folder
-app.get("/invoice.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "invoice.html"));
-});
-
-app.get("/orderr.html", (req, res) => {
-    res.sendFile(path.join(__dirname, "orderr.html"));
-});
 
 // Test backend
 app.get("/test", (req, res) => {

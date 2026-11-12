@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+</head>
+
+<body>
+
+    <center>
+
+        <h2>Invoice</h2>
+
+        <form id="invoiceForm">
+
+            <table>
+
+                <tr>
+                    <td>Invoice No:</td>
+                    <td>
+                        <input type="text" id="invoice_no"
+                            placeholder="Enter Your Invoice Number" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Invoice Date:</td>
+                    <td>
+                        <input type="date" id="invoice_date" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Name:</td>
+                    <td>
+                        <input type="text" id="customer_name"
+                            placeholder="Enter Your Customer Name" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Contact:</td>
+                    <td>
+                        <input type="tel" id="customer_contact"
+                            placeholder="Enter Your Mobile Number" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Customer Mail:</td>
+                    <td>
+                        <input type="email" id="customer_mail"
+                            placeholder="Enter Your Email" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>GSTIN:</td>
+                    <td>
+                        <input type="text" id="gstin"
+                            placeholder="Enter Your GSTIN" required>
+                    </td>
+                </tr>
+
+            </table>
+
+            <br>
+
+            <input type="submit" id="submitBtn" value="Create Invoice">
+            <input type="reset" value="Reset">
+
+        </form>
+
+    </center>
+
+<script src="/invoice/invoice.js"></script>
+
+</body>
+</html>
