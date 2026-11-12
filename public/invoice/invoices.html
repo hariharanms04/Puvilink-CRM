@@ -10,41 +10,39 @@
 
 <body>
 
-    <center>
+    <h1>Invoice List</h1>
 
-        <h2>Invoice List</h2>
+    <button onclick="window.location.href='invoice.html'">
+        Create Invoice
+    </button>
 
-        <button onclick="window.location.href='/'">
-            Back to Home
-        </button>
+    <h2>Invoice List Table</h2>
 
-        <button onclick="window.location.href='invoice.html'">
-            Create Invoice
-        </button>
+    <button onclick="window.location.href='/'">
+        Back to Home
+    </button>
 
-        <br><br>
+    <table border="1" cellpadding="10" cellspacing="0">
 
-      <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Invoice No</th>
+                <th>Invoice Date</th>
+                <th>Customer Name</th>
+                <th>Customer Contact</th>
+                <th>Customer Mail</th>
+                <th>GSTIN</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-            <thead>
-                <tr>
-                    <th>Invoice No</th>
-                    <th>Invoice Date</th>
-                    <th>Customer Name</th>
-                    <th>Customer Contact</th>
-                    <th>Customer Mail</th>
-                    <th>GSTIN</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+        <tbody id="invoiceTableBody">
+        </tbody>
 
-            <tbody id="invoiceTableBody">
-            </tbody>
+    </table>
 
-        </table>
+    <script src="invoices.js"></script>
 
-    </center>
-
-    <script src="/invoice/invoices.js"></script>
 </body>
+
 </html>
