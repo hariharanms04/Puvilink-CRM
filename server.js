@@ -16,6 +16,11 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 
+// Main Login Page
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
 // Serve frontend files locally from the public folder
 app.use(express.static(path.join(__dirname, "public")));
 

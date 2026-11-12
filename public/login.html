@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Login</title>
+</head>
+
+<body>
+
+    <center>
+
+        <h2>CRM Login</h2>
+
+        <form id="loginForm">
+
+            <table>
+
+                <tr>
+                    <td>Username:</td>
+                    <td>
+                        <input type="text" id="username" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input type="password" id="password" required>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" align="center">
+                        <br>
+                        <button type="submit">Login</button>
+                    </td>
+                </tr>
+
+            </table>
+
+        </form>
+
+        <p id="message"></p>
+
+    </center>
+
+    <script>
+
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+
+            e.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === "admin" && password === "12345") {
+
+                window.location.href = "index.html";
+
+            } else {
+
+                document.getElementById("message").innerHTML =
+                    "Invalid Username or Password";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
