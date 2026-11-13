@@ -94,14 +94,21 @@ app.post("/enquiry", async (req, res) => {
 // READ ALL ENQUIRIES
 app.get("/enquiries", async (req, res) => {
     try {
+        const startTime = Date.now();
+
         const result = await pool.query(
             "SELECT * FROM enquiry ORDER BY enquiry_date DESC"
         );
+
+        const queryTime = Date.now() - startTime;
+
+        console.log("ENQUIRY DATABASE QUERY TIME:", queryTime, "ms");
 
         res.json(result.rows);
 
     } catch (error) {
         console.error("FETCH ERROR:", error);
+
         res.status(500).json({
             message: "Unable to retrieve enquiries"
         });
