@@ -93,26 +93,47 @@ app.post("/enquiry", async (req, res) => {
 
 // READ ALL ENQUIRIES
 app.get("/enquiries", async (req, res) => {
-    try {
-        const startTime = Date.now();
 
-        const result = await pool.query(
+    let client;
+
+    try {
+
+        const connectionStart = Date.now();
+
+        client = await pool.connect();
+
+        const connectionTime = Date.now() - connectionStart;
+
+        const queryStart = Date.now();
+
+        const result = await client.query(
             "SELECT * FROM enquiry ORDER BY enquiry_date DESC"
         );
 
-        const queryTime = Date.now() - startTime;
+        const queryTime = Date.now() - queryStart;
 
-        console.log("ENQUIRY DATABASE QUERY TIME:", queryTime, "ms");
+        console.log("ENQUIRY CONNECTION TIME:", connectionTime, "ms");
+
+        console.log("ENQUIRY SQL QUERY TIME:", queryTime, "ms");
 
         res.json(result.rows);
 
     } catch (error) {
+
         console.error("FETCH ERROR:", error);
 
         res.status(500).json({
             message: "Unable to retrieve enquiries"
         });
+
+    } finally {
+
+        if (client) {
+            client.release();
+        }
+
     }
+
 });
 
 // READ ONE ENQUIRY
