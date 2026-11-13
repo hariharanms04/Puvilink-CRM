@@ -1,25 +1,24 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quotation List</title>
 </head>
+
 <body>
 
     <h1>Quotation List</h1>
 
-    <a href="/Quotation/quotation.html">
-        <input type="button" value="Create Quotation">
-    </a>
+    <button onclick="window.location.href='/Quotation/quotation.html'">
+        Create Quotation
+    </button>
 
-    <h2>Quotation List Table</h2>
-   <button onclick="window.location.href='/index.html'">
-    Back to Home
-</button>
+    <hr>
 
-    <table border="1" cellpadding="10" cellspacing="0">
+    <table width="100%" border="1" cellpadding="10" cellspacing="0">
 
         <thead>
             <tr>
@@ -35,7 +34,6 @@
         </thead>
 
         <tbody id="quotationTable">
-
         </tbody>
 
     </table>
@@ -43,4 +41,5 @@
     <script src="/Quotation/quotations.js"></script>
 
 </body>
+
 </html>

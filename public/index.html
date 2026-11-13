@@ -1,36 +1,221 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Dashboard</title>
+    <title>PUVILINK CRM</title>
 </head>
+
 <body>
 
-    <h2>CRM Dashboard</h2>
+    <!-- TOP NAVIGATION BAR -->
 
-    <a href="/Enquiry/enquirylist.html">
-        <input type="button" value="Enquiry">
-    </a>
-    <br><br>
+    <table width="100%" cellpadding="12" cellspacing="0">
+        <tr>
+            <td width="65%">
+                <h2>PUVILINK CRM</h2>
+            </td>
 
-    <a href="/Quotation/quotationlist.html">
-        <input type="button" value="Quotation">
-    </a>
-    <br><br>
-<a href="/invoice/invoices.html">
-    <input type="button" value="Invoice">
-</a>
-    <br><br>
+            <td align="right">
+                <b>CRM Dashboard</b>
+            </td>
 
-    <a href="/Order/orderlist.html">
-        <input type="button" value="Order">
-    </a>
-    <br><br>
+            <td width="10%" align="right">
+                <button onclick="window.location.href='/'">
+                    Logout
+                </button>
+            </td>
+        </tr>
+    </table>
 
-<a href="/Customer/customers.html">
-    <input type="button" value="Customer">
-</a>
+    <hr>
+
+    <!-- MAIN LAYOUT -->
+
+    <table width="100%" border="1" cellpadding="12" cellspacing="0">
+        <tr>
+
+            <!-- LEFT SIDEBAR -->
+
+            <td width="18%" valign="top">
+
+                <h3>MENU</h3>
+                <hr>
+
+                <p>
+                    <a href="/index.html" target="_top">Dashboard</a>
+                </p>
+
+                <p>
+                    <a href="/Enquiry/enquirylist.html"
+                       target="contentFrame">Enquiry</a>
+                </p>
+
+                <p>
+                    <a href="/Quotation/quotationlist.html"
+                       target="contentFrame">Quotation</a>
+                </p>
+
+                <p>
+                    <a href="/Order/orderlist.html"
+                       target="contentFrame">Order</a>
+                </p>
+
+                <p>
+                    <a href="/invoice/invoices.html"
+                       target="contentFrame">Invoice</a>
+                </p>
+
+                <p>
+                    <a href="/Customer/customers.html"
+                       target="contentFrame">Customer</a>
+                </p>
+
+                <p>
+                    <a href="#" target="contentFrame">Reports</a>
+                </p>
+
+                <p>
+                    <a href="#" target="contentFrame">Settings</a>
+                </p>
+
+            </td>
+
+            <!-- CENTRE CONTENT -->
+
+            <td width="82%" valign="top">
+
+                <iframe
+                    name="contentFrame"
+                    width="100%"
+                    height="650"
+                    frameborder="0"
+                    srcdoc='
+                    <!DOCTYPE html>
+                    <html>
+                    <body>
+
+                        <!-- DASHBOARD HEADING -->
+
+                        <h2>Dashboard Overview</h2>
+
+                        <p>Welcome to PUVILINK CRM</p>
+
+                        <hr>
+
+                        <!-- BUSINESS SUMMARY -->
+
+                        <h3>Business Summary</h3>
+
+                        <table width="100%" border="1"
+                               cellpadding="18" cellspacing="0">
+
+                            <tr>
+                                <td align="center">
+                                    <h2>--</h2>
+                                    <b>Total Enquiries</b>
+                                </td>
+
+                                <td align="center">
+                                    <h2>--</h2>
+                                    <b>Total Quotations</b>
+                                </td>
+
+                                <td align="center">
+                                    <h2>--</h2>
+                                    <b>Total Invoices</b>
+                                </td>
+
+                                <td align="center">
+                                    <h2>--</h2>
+                                    <b>Total Customers</b>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <br>
+
+                        <!-- RECENT ENQUIRIES -->
+
+                        <h3>Recent Enquiries</h3>
+
+                        <table width="100%" border="1"
+                               cellpadding="10" cellspacing="0">
+
+                            <tr>
+                                <th>Enquiry No</th>
+                                <th>Company Name</th>
+                                <th>Mobile No</th>
+                                <th>Enquiry Date</th>
+                            </tr>
+
+                            <tr>
+                                <td colspan="4" align="center">
+                                    No enquiry records available
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <br>
+
+                        <!-- RECENT QUOTATIONS -->
+
+                        <h3>Recent Quotations</h3>
+
+                        <table width="100%" border="1"
+                               cellpadding="10" cellspacing="0">
+
+                            <tr>
+                                <th>Quotation No</th>
+                                <th>Customer Name</th>
+                                <th>Status</th>
+                                <th>Proposal Date</th>
+                            </tr>
+
+                            <tr>
+                                <td colspan="4" align="center">
+                                    No quotation records available
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <br>
+
+                        <!-- BUSINESS ACTIVITY -->
+
+                        <h3>Business Activity</h3>
+
+                        <table width="100%" border="1"
+                               cellpadding="10" cellspacing="0">
+
+                            <tr>
+                                <th>Activity</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" align="center">
+                                    No recent activities available
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </body>
+                    </html>
+                    '>
+                </iframe>
+
+            </td>
+
+        </tr>
+    </table>
+
 </body>
 </html>
