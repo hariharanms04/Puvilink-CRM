@@ -42,7 +42,7 @@ async function loadQuotation() {
         // Do not allow changing the primary key
         quotationNo.readOnly = true;
 
-        submitBtn.textContent = "Update Quotation";
+        submitBtn.value = "Update Quotation";
 
     } catch (error) {
         console.error("LOAD ERROR:", error);
@@ -55,7 +55,7 @@ async function loadQuotation() {
 if (isEditMode) {
     loadQuotation();
 } else {
-    submitBtn.textContent = "Create Quotation";
+    submitBtn.value = "Create Quotation";
 }
 
 // Submit form

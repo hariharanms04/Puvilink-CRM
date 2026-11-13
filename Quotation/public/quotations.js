@@ -88,7 +88,6 @@ function updateQuotation(quotationNo) {
 
 }
 
-
 // DELETE QUOTATION
 async function deleteQuotation(quotationNo) {
 

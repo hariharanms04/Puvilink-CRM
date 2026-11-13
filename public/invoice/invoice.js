@@ -40,7 +40,7 @@ async function loadInvoice() {
         // Do not allow changing the primary key
         invoiceNo.readOnly = true;
 
-        submitBtn.textContent = "Update Invoice";
+       submitBtn.value = "Update Invoice";
 
     } catch (error) {
         console.error("LOAD ERROR:", error);
@@ -53,7 +53,7 @@ async function loadInvoice() {
 if (isEditMode) {
     loadInvoice();
 } else {
-    submitBtn.textContent = "Create Invoice";
+    submitBtn.value = "Create Invoice";
 }
 
 // Submit form
